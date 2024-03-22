@@ -2,14 +2,35 @@
 #include "program.cpp"
 using namespace LinearAlgebra;
 
-int main(int argc, char *argv[])
+int main()
 {
-    Matrix matrix = Matrix(3, 3);
-    int* a = matrix[1];
-    a[1] = 1;
+    int count;
+    std::cin >> count;
+    
+    int rows[count], coloms[count];
+    for(int i = 0; i < count; i++)
+    {
+        std::cin >> rows[i];
+    }
+    for(int i = 0; i < count; i++)
+    {
+        std::cin >> coloms[i];
+    }
 
-    int* b = matrix[1];
-    std::cout << b[1] << std::endl;
+    Matrix matrix = Matrix(3, 3);
+    int k = 0;
+    for(int i = 0; i < 3; i++)
+    {
+        for(int j = 0; j < 3; j++)
+        {  
+            matrix[i][j] = k;
+            k++;
+        }
+    }
+
+    std::cout << matrix.GetSubMatrixDeterminant(count, rows, coloms) << std::endl;
+    std::cout << matrix.GetMinor(count, rows, coloms) << std::endl;
+    std::cout << matrix.GetDeterminator() << std::endl;
 
     return 0;
 }
