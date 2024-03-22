@@ -41,6 +41,15 @@ namespace LinearAlgebra
                 return array[i];
             }
 
+            int GetRowOrder()
+            {
+                return m;
+            }
+            int GetColomnOrder()
+            {
+                return n;
+            }
+
             // Determinant calculation
             float GetSubMatrixDeterminant(int count, int rows[], int colomns[])
             {
@@ -193,14 +202,14 @@ namespace LinearAlgebra
                     (*this)[i][second_colomn] = buffer[i];
                 }
             }
-            void MultiplicatRow(float k, int row)
+            void MultiplyRow(float k, int row)
             {
                 for(int i = 0; i < m; i++)
                 {
                     (*this)[row][i] *= k;
                 }
             }
-            void MultiplicatColomn(float k, int colomn)
+            void MultiplyColomn(float k, int colomn)
             {
                 for(int i = 0; i < n; i++)
                 {
@@ -221,5 +230,51 @@ namespace LinearAlgebra
                     (*this)[i][old_colomn] += k * (*this)[i][added_colomn];
                 }
             }
+
+            // Rank calculation
+            int GetRank()
+            {
+                Matrix matrix = *this;
+                bool is_found;
+                int rank = 0;
+
+                do
+                {
+                    is_found = false;
+                    for(int i = rank; i < m; i++)
+                    {
+                        if(is_found) break;
+                        for(int j = rank; j < n; j++)
+                        {
+                            if(matrix[i][j] != 0)
+                            {
+                                is_found = true;
+                                matrix.SwapRows(rank, i);
+                                matrix.SwapColomns(rank, j);
+                                break;
+                            }
+                        }
+                    }
+
+                    if(is_found)
+                    {
+                        matrix.MultiplyRow(1/matrix[rank][rank], rank);
+                        for(int i = rank + 1; i < n; i++)
+                        {
+                            matrix.SumColomn(i, rank, -matrix[rank][i]);
+                        }                        
+                        for(int i = rank + 1; i < m; i++)
+                        {
+                            matrix.SumRow(i, rank, -matrix[i][rank]);
+                        }
+
+                        rank += 1;
+                    }
+                }
+                while(is_found && rank < std::min(m, n));
+
+                return rank;
+            }
+
     };
 }

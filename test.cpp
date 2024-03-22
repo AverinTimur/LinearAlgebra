@@ -57,13 +57,13 @@ int main()
         print_matrix(matrix, 3, 3);
         matrix.SwapColomns(1, 2);
         
-        matrix.MultiplicatRow(4, 0);
+        matrix.MultiplyRow(4, 0);
         print_matrix(matrix, 3, 3);
-        matrix.MultiplicatRow(0.25, 0);
+        matrix.MultiplyRow(0.25, 0);
         
-        matrix.MultiplicatColomn(4, 0);
+        matrix.MultiplyColomn(4, 0);
         print_matrix(matrix, 3, 3);
-        matrix.MultiplicatColomn(0.25, 0);
+        matrix.MultiplyColomn(0.25, 0);
 
         matrix.SumRow(0, 1, 2);
         print_matrix(matrix, 3, 3);
@@ -73,6 +73,7 @@ int main()
         print_matrix(matrix, 3, 3);
         matrix.SumColomn(0, 1, -2);
 
+        std::cout << matrix.GetRank() << std::endl;
     }
     catch(MatrixError error)
     {
