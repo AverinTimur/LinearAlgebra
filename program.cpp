@@ -35,7 +35,21 @@ namespace LinearAlgebra
                     }
                 }
             }
-            
+            Matrix Clone()
+            {
+                Matrix matrix = Matrix(m, n);
+
+                for(int i = 0; i < m; i++)
+                {
+                    for(int j = 0; j < n; j++)
+                    {
+                        matrix[i][j] = (*this)[i][j];
+                    }
+                }
+
+                return matrix;
+            }
+
             float* operator [](int i)
             {
                 return array[i];
@@ -234,7 +248,7 @@ namespace LinearAlgebra
             // Rank calculation
             int GetRank()
             {
-                Matrix matrix = *this;
+                Matrix matrix = this->Clone();
                 bool is_found;
                 int rank = 0;
 
@@ -276,5 +290,23 @@ namespace LinearAlgebra
                 return rank;
             }
 
+            // Linear system
+            bool IsSolutionExists(float *constant_terms)
+            {
+                Matrix matrix = Matrix(m, n + 1);
+                for(int i = 0; i < m; i++)
+                {
+                    for(int j = 0; j < n; j++)
+                    {
+                        matrix[i][j] = (*this)[i][j];
+                    }
+                }
+                for(int i = 0; i < m; i++)
+                {
+                    matrix[i][n] = constant_terms[i];
+                }
+                
+                return this->GetRank() == matrix.GetRank();
+            }
     };
 }

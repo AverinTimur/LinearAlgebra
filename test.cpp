@@ -74,6 +74,40 @@ int main()
         matrix.SumColomn(0, 1, -2);
 
         std::cout << matrix.GetRank() << std::endl;
+
+        Matrix new_matrix = Matrix(3, 2);
+        k = 1;
+        for(int i = 0; i < 2; i++)
+        {
+            for(int j = 0; j < 2; j++)
+            {  
+                new_matrix[i][j] = k;
+                k++;
+            }
+        }
+        new_matrix[0][1] = -2;
+        new_matrix[2][0] = 1;
+        new_matrix[2][1] = 1;
+
+        float constant_terms[3]{0, 10, 3};
+        if(new_matrix.IsSolutionExists(constant_terms))
+        {
+            std::cout << "True" << std::endl;
+        }
+        else
+        {
+            std::cout << "False" << std::endl;
+        }
+        
+        constant_terms[2] = 2;
+        if(new_matrix.IsSolutionExists(constant_terms))
+        {
+            std::cout << "True" << std::endl;
+        }
+        else
+        {
+            std::cout << "False" << std::endl;
+        }
     }
     catch(MatrixError error)
     {
