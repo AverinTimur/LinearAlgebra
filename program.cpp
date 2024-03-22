@@ -17,7 +17,7 @@ namespace LinearAlgebra
     {
         private:
             int m, n; // count of rows, colomns
-            int **array;
+            float **array;
 
         public:
             // Base functions
@@ -25,10 +25,10 @@ namespace LinearAlgebra
             {
                 this->n = n;
                 this->m = m;
-                array = new int*;
+                array = new float*;
                 for(int i = 0; i < m; i++)
                 {
-                    array[i] = new int[n];
+                    array[i] = new float[n];
                     for(int j = 0; j < n; j++)
                     {
                         array[i][j] = 0;
@@ -36,13 +36,13 @@ namespace LinearAlgebra
                 }
             }
             
-            int* operator [](int i)
+            float* operator [](int i)
             {
                 return array[i];
             }
 
-            // Parameters calculation
-            int GetSubMatrixDeterminant(int count, int rows[], int colomns[])
+            // Determinant calculation
+            float GetSubMatrixDeterminant(int count, int rows[], int colomns[])
             {
                 // Error check
                 for(int i = 0; i < count; i += 1)
@@ -61,7 +61,7 @@ namespace LinearAlgebra
                 }
 
                 // Calculation
-                int determinant;
+                float determinant;
                 if(count == 1)
                 {
                     determinant =  (*this)[rows[0]][colomns[0]];
@@ -97,7 +97,7 @@ namespace LinearAlgebra
 
                 return determinant;
             }
-            int GetMinor(int count, int rows[], int colomns[])
+            float GetMinor(int count, int rows[], int colomns[])
             {
                 // Error check
                 if(m != n)
@@ -145,7 +145,7 @@ namespace LinearAlgebra
 
                 return GetSubMatrixDeterminant(n - count, new_rows, new_colomns);
             }
-            int GetDeterminator()
+            float GetDeterminator()
             {
                 // Error check
                 if(m != n)
@@ -166,5 +166,60 @@ namespace LinearAlgebra
                 return GetSubMatrixDeterminant(n, new_rows, new_colomns);
             }
             
+            // Elementary operations
+            void SwapRows(int first_row, int second_row)
+            {
+                float buffer[n];
+                for(int i = 0; i < m; i++)
+                {
+                    buffer[i] = (*this)[first_row][i];
+                }
+                for(int i = 0; i < m; i++)
+                {
+                    (*this)[first_row][i] = (*this)[second_row][i];
+                    (*this)[second_row][i] = buffer[i];
+                }
+            }
+            void SwapColomns(int first_colomn, int second_colomn)
+            {
+                float buffer[n];
+                for(int i = 0; i < m; i++)
+                {
+                    buffer[i] = (*this)[i][first_colomn];
+                }
+                for(int i = 0; i < m; i++)
+                {
+                    (*this)[i][first_colomn] = (*this)[i][second_colomn];
+                    (*this)[i][second_colomn] = buffer[i];
+                }
+            }
+            void MultiplicatRow(float k, int row)
+            {
+                for(int i = 0; i < m; i++)
+                {
+                    (*this)[row][i] *= k;
+                }
+            }
+            void MultiplicatColomn(float k, int colomn)
+            {
+                for(int i = 0; i < n; i++)
+                {
+                    (*this)[i][colomn] *= k;
+                }
+            }
+            void SumRow(int old_row, int added_row, int k)
+            {
+                for(int i = 0; i < m; i++)
+                {
+                    (*this)[old_row][i] += k * (*this)[added_row][i];
+                }
+            }
+            void SumColomn(int old_colomn, int added_colomn, int k)
+            {
+                for(int i = 0; i < m; i++)
+                {
+                    (*this)[i][old_colomn] += k * (*this)[i][added_colomn];
+                }
+            }
     };
 }

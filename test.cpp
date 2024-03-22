@@ -2,6 +2,20 @@
 #include "program.cpp"
 using namespace LinearAlgebra;
 
+void print_matrix(Matrix matrix, int m, int n)
+{
+    std::cout << std::endl;
+    for(int i = 0; i < m; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            std::cout << matrix[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+}
+
 int main()
 {
     int count;
@@ -29,10 +43,36 @@ int main()
                 k++;
             }
         }
+        print_matrix(matrix, 3, 3);
 
         std::cout << matrix.GetSubMatrixDeterminant(count, rows, coloms) << std::endl;
         std::cout << matrix.GetMinor(count, rows, coloms) << std::endl;
         std::cout << matrix.GetDeterminator() << std::endl;
+
+        matrix.SwapRows(1, 2);
+        print_matrix(matrix, 3, 3);
+        matrix.SwapRows(1, 2);
+
+        matrix.SwapColomns(1, 2);
+        print_matrix(matrix, 3, 3);
+        matrix.SwapColomns(1, 2);
+        
+        matrix.MultiplicatRow(4, 0);
+        print_matrix(matrix, 3, 3);
+        matrix.MultiplicatRow(0.25, 0);
+        
+        matrix.MultiplicatColomn(4, 0);
+        print_matrix(matrix, 3, 3);
+        matrix.MultiplicatColomn(0.25, 0);
+
+        matrix.SumRow(0, 1, 2);
+        print_matrix(matrix, 3, 3);
+        matrix.SumRow(0, 1, -2);
+                
+        matrix.SumColomn(0, 1, 2);
+        print_matrix(matrix, 3, 3);
+        matrix.SumColomn(0, 1, -2);
+
     }
     catch(MatrixError error)
     {
