@@ -17,20 +17,30 @@ int main()
         std::cin >> coloms[i];
     }
 
-    Matrix matrix = Matrix(3, 3);
-    int k = 0;
-    for(int i = 0; i < 3; i++)
+    try
     {
-        for(int j = 0; j < 3; j++)
-        {  
-            matrix[i][j] = k;
-            k++;
+        Matrix matrix = Matrix(3, 3);
+        int k = 0;
+        for(int i = 0; i < 3; i++)
+        {
+            for(int j = 0; j < 3; j++)
+            {  
+                matrix[i][j] = k;
+                k++;
+            }
         }
-    }
 
-    std::cout << matrix.GetSubMatrixDeterminant(count, rows, coloms) << std::endl;
-    std::cout << matrix.GetMinor(count, rows, coloms) << std::endl;
-    std::cout << matrix.GetDeterminator() << std::endl;
+        std::cout << matrix.GetSubMatrixDeterminant(count, rows, coloms) << std::endl;
+        std::cout << matrix.GetMinor(count, rows, coloms) << std::endl;
+        std::cout << matrix.GetDeterminator() << std::endl;
+    }
+    catch(MatrixError error)
+    {
+        std::cout << std::endl;
+        std::cout << "MATRIX ERROR" << std::endl;
+        std::cout << error.name << std::endl;
+        std::cout << error.text << std::endl;
+    }
 
     return 0;
 }

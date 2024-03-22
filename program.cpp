@@ -2,10 +2,21 @@
 
 namespace LinearAlgebra
 {
+    struct MatrixError
+    {
+        std::string name;
+        std::string text;
+
+        MatrixError(std::string name, std::string text)
+        {
+            this->name = name;
+            this->text = text;
+        }
+    };
     class Matrix
     {
         private:
-            int m, n; // count of rows, coloms
+            int m, n; // count of rows, colomns
             int **array;
 
         public:
@@ -31,21 +42,21 @@ namespace LinearAlgebra
             }
 
             // Parameters calculation
-            int GetSubMatrixDeterminant(int count, int rows[], int coloms[])
+            int GetSubMatrixDeterminant(int count, int rows[], int colomns[])
             {
                 // Error check
                 for(int i = 0; i < count; i += 1)
                 {
                     if(rows[i] >= m)
                     {
-                        throw "ERROR";
+                        throw MatrixError("Number out of Matrix", "Matrix don't contains row" + std::to_string(m));
                     }
                 }
                 for(int i = 0; i < count; i += 1)
                 {
-                    if(coloms[i] >= n)
+                    if(colomns[i] >= n)
                     {
-                        throw "ERROR";
+                        throw MatrixError("Number out of Matrix", "Matrix don't contains colomn" + std::to_string(n));
                     }
                 }
 
@@ -53,7 +64,7 @@ namespace LinearAlgebra
                 int determinant;
                 if(count == 1)
                 {
-                    determinant =  (*this)[rows[0]][coloms[0]];
+                    determinant =  (*this)[rows[0]][colomns[0]];
                 }
                 else
                 {
@@ -75,26 +86,26 @@ namespace LinearAlgebra
 
                         if(i % 2 == 0)
                         {
-                            determinant += (*this)[rows[i]][coloms[0]] * GetSubMatrixDeterminant((count - 1), new_rows, (coloms + 1));
+                            determinant += (*this)[rows[i]][colomns[0]] * GetSubMatrixDeterminant((count - 1), new_rows, (colomns + 1));
                         }
                         else
                         {
-                            determinant -= (*this)[rows[i]][coloms[0]] * GetSubMatrixDeterminant((count - 1), new_rows, (coloms + 1));
+                            determinant -= (*this)[rows[i]][colomns[0]] * GetSubMatrixDeterminant((count - 1), new_rows, (colomns + 1));
                         }
                     }
                 }
 
                 return determinant;
             }
-            int GetMinor(int count, int rows[], int coloms[])
+            int GetMinor(int count, int rows[], int colomns[])
             {
                 // Error check
                 if(m != n)
                 {
-                    throw "ERROR";
+                    throw MatrixError("Matrix isn't square", "Minor is determined only in square matrix");
                 }
 
-                int new_rows[n - count], new_coloms[n - count];
+                int new_rows[n - count], new_colomns[n - count];
                 int last_number = 0;
                 int j = 0;
                 for(int i = 0; i < count; i++)
@@ -117,9 +128,9 @@ namespace LinearAlgebra
                 j = 0;
                 for(int i = 0; i < count; i++)
                 {
-                    while(last_number < coloms[i])
+                    while(last_number < colomns[i])
                     {
-                        new_coloms[j] = last_number;
+                        new_colomns[j] = last_number;
                         last_number++;
                         j++;
                     }
@@ -127,32 +138,32 @@ namespace LinearAlgebra
                 }
                 while(last_number < n)
                 {
-                    new_coloms[j] = last_number;
+                    new_colomns[j] = last_number;
                     last_number++;
                     j++;
                 }
 
-                return GetSubMatrixDeterminant(n - count, new_rows, new_coloms);
+                return GetSubMatrixDeterminant(n - count, new_rows, new_colomns);
             }
             int GetDeterminator()
             {
                 // Error check
                 if(m != n)
                 {
-                    throw "ERROR";
+                    throw MatrixError("Matrix isn't square", "Determinator is determined only in square matrix");
                 }
 
-                int new_rows[n], new_coloms[n];
+                int new_rows[n], new_colomns[n];
                 for(int i = 0; i < n; i++)
                 {
                     new_rows[i] = i;
                 }
                 for(int i = 0; i < n; i++)
                 {
-                    new_coloms[i] = i;
+                    new_colomns[i] = i;
                 }
                 
-                return GetSubMatrixDeterminant(n, new_rows, new_coloms);
+                return GetSubMatrixDeterminant(n, new_rows, new_colomns);
             }
             
     };
