@@ -47,31 +47,31 @@ int main()
 
         std::cout << matrix.GetSubMatrixDeterminant(count, rows, coloms) << std::endl;
         std::cout << matrix.GetMinor(count, rows, coloms) << std::endl;
-        std::cout << matrix.GetDeterminator() << std::endl;
+        std::cout << matrix.GetDeterminant() << std::endl;
 
         matrix.SwapRows(1, 2);
         print_matrix(matrix, 3, 3);
         matrix.SwapRows(1, 2);
 
-        matrix.SwapColomns(1, 2);
+        matrix.SwapColumns(1, 2);
         print_matrix(matrix, 3, 3);
-        matrix.SwapColomns(1, 2);
+        matrix.SwapColumns(1, 2);
         
         matrix.MultiplyRow(4, 0);
         print_matrix(matrix, 3, 3);
         matrix.MultiplyRow(0.25, 0);
         
-        matrix.MultiplyColomn(4, 0);
+        matrix.MultiplyColumns(4, 0);
         print_matrix(matrix, 3, 3);
-        matrix.MultiplyColomn(0.25, 0);
+        matrix.MultiplyColumns(0.25, 0);
 
         matrix.SumRow(0, 1, 2);
         print_matrix(matrix, 3, 3);
         matrix.SumRow(0, 1, -2);
                 
-        matrix.SumColomn(0, 1, 2);
+        matrix.SumColumns(0, 1, 2);
         print_matrix(matrix, 3, 3);
-        matrix.SumColomn(0, 1, -2);
+        matrix.SumColumns(0, 1, -2);
 
         std::cout << matrix.GetRank() << std::endl;
 
@@ -108,6 +108,27 @@ int main()
         {
             std::cout << "False" << std::endl;
         }
+
+        new_matrix = Matrix(3, 3);
+        new_matrix[0][0] = 5;
+        new_matrix[1][0] = 4;
+        new_matrix[2][0] = 4;
+        new_matrix[0][1] = 4;
+        new_matrix[1][1] = 5;
+        new_matrix[2][1] = 4;
+        new_matrix[0][2] = 4;
+        new_matrix[1][2] = 4;
+        new_matrix[2][2] = 5;
+        constant_terms[0] = 11;
+        constant_terms[1] = 8;
+        constant_terms[2] = 7;
+
+        float* solution = new_matrix.CramerRule(constant_terms);
+        for(int i = 0; i < 3; i++)
+        {
+            std::cout << solution[i] << " ";
+        }
+        std::cout << std::endl;
     }
     catch(MatrixError error)
     {
