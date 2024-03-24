@@ -13,11 +13,13 @@ namespace LinearAlgebra
             this->text = text;
         }
     };
+
+    template<typename T>
     class Matrix
     {
         private:
             int m, n; // count of rows, columns
-            float **array;
+            T **array;
 
         public:
             // Base functions
@@ -25,10 +27,10 @@ namespace LinearAlgebra
             {
                 this->n = n;
                 this->m = m;
-                array = new float*;
+                array = new T*;
                 for(int i = 0; i < m; i++)
                 {
-                    array[i] = new float[n];
+                    array[i] = new T[n];
                     for(int j = 0; j < n; j++)
                     {
                         array[i][j] = 0;
@@ -50,7 +52,7 @@ namespace LinearAlgebra
                 return matrix;
             }
 
-            float* operator [](int i)
+            T* operator [](int i)
             {
                 return array[i];
             }
@@ -65,7 +67,7 @@ namespace LinearAlgebra
             }
 
             // Determinant calculation
-            float GetSubMatrixDeterminant(int count, int rows[], int columns[])
+            T GetSubMatrixDeterminant(int count, int rows[], int columns[])
             {
                 // Error check
                 for(int i = 0; i < count; i += 1)
@@ -84,10 +86,10 @@ namespace LinearAlgebra
                 }
 
                 // Calculation
-                std::sort(rows, rows + count, [](float a, float b){return a < b;});
-                std::sort(columns, columns + count, [](float a, float b){return a < b;});
+                std::sort(rows, rows + count, [](T a, T b){return a < b;});
+                std::sort(columns, columns + count, [](T a, T b){return a < b;});
 
-                float determinant;
+                T determinant;
                 if(count == 1)
                 {
                     determinant = (*this)[rows[0]][columns[0]];
@@ -123,7 +125,7 @@ namespace LinearAlgebra
 
                 return determinant;
             }
-            float GetMinor(int count, int rows[], int columns[])
+            T GetMinor(int count, int rows[], int columns[])
             {
                 // Error check
                 if(m != n)
@@ -171,7 +173,7 @@ namespace LinearAlgebra
 
                 return GetSubMatrixDeterminant(n - count, new_rows, new_columns);
             }
-            float GetDeterminant()
+            T GetDeterminant()
             {
                 // Error check
                 if(m != n)
@@ -195,7 +197,7 @@ namespace LinearAlgebra
             // Elementary operations
             void SwapRows(int first_row, int second_row)
             {
-                float buffer[n];
+                T buffer[n];
                 for(int i = 0; i < m; i++)
                 {
                     buffer[i] = (*this)[first_row][i];
@@ -208,7 +210,7 @@ namespace LinearAlgebra
             }
             void SwapColumns(int first_column, int second_column)
             {
-                float buffer[n];
+                T buffer[n];
                 for(int i = 0; i < m; i++)
                 {
                     buffer[i] = (*this)[i][first_column];
@@ -219,14 +221,14 @@ namespace LinearAlgebra
                     (*this)[i][second_column] = buffer[i];
                 }
             }
-            void MultiplyRow(float k, int row)
+            void MultiplyRow(T k, int row)
             {
                 for(int i = 0; i < m; i++)
                 {
                     (*this)[row][i] *= k;
                 }
             }
-            void MultiplyColumns(float k, int column)
+            void MultiplyColumns(T k, int column)
             {
                 for(int i = 0; i < n; i++)
                 {
@@ -294,7 +296,7 @@ namespace LinearAlgebra
             }
 
             // Linear system
-            bool IsSolutionExists(float *constant_terms)
+            bool IsSolutionExists(T *constant_terms)
             {
                 Matrix matrix = Matrix(m, n + 1);
                 for(int i = 0; i < m; i++)
@@ -317,7 +319,7 @@ namespace LinearAlgebra
                 int rank = GetRank();
                 
                 int *columns = new int[rank];
-                int *rows = new int[2*rank];
+                int *rows = new int[2*rank]{0};
                 int count = 0;
                 for(int j = 0; j < n; j++)
                 {
@@ -342,7 +344,7 @@ namespace LinearAlgebra
                 return rows;
             }
 
-            float* CramerRule(float *constant_terms)
+            T* CramerRule(T *constant_terms)
             {
                 int rank = GetRank();
                 if(rank != n || !IsSolutionExists(constant_terms))
@@ -354,8 +356,8 @@ namespace LinearAlgebra
 
                 int determinant = GetSubMatrixDeterminant(rank, basis, (basis + rank));
 
-                float *answer = new float[rank];
-                float x;
+                T *answer = new T[rank];
+                T x;
                 for(int j = 0; j < rank; j++)
                 {
                     x = 0;

@@ -2,7 +2,7 @@
 #include "program.cpp"
 using namespace LinearAlgebra;
 
-void print_matrix(Matrix matrix, int m, int n)
+void print_matrix(Matrix<float> matrix, int m, int n)
 {
     std::cout << std::endl;
     for(int i = 0; i < m; i++)
@@ -33,7 +33,7 @@ int main()
 
     try
     {
-        Matrix matrix = Matrix(3, 3);
+        Matrix matrix = Matrix<float>(3, 3);
         int k = 0;
         for(int i = 0; i < 3; i++)
         {
@@ -75,7 +75,7 @@ int main()
 
         std::cout << matrix.GetRank() << std::endl;
 
-        Matrix new_matrix = Matrix(3, 2);
+        Matrix new_matrix = Matrix<float>(3, 2);
         k = 1;
         for(int i = 0; i < 2; i++)
         {
@@ -109,7 +109,7 @@ int main()
             std::cout << "False" << std::endl;
         }
 
-        new_matrix = Matrix(3, 3);
+        new_matrix = Matrix<float>(3, 3);
         new_matrix[0][0] = 5;
         new_matrix[1][0] = 4;
         new_matrix[2][0] = 4;
