@@ -37,6 +37,14 @@ namespace LinearAlgebra
                     }
                 }
             }
+            void Dispose()
+            {
+                for(int i = 0; i < n; i++)
+                {
+                    delete[] array[i];
+                }
+                delete[] array;
+            }
             Matrix Clone()
             {
                 Matrix matrix = Matrix(m, n);
@@ -197,28 +205,34 @@ namespace LinearAlgebra
             // Elementary operations
             void SwapRows(int first_row, int second_row)
             {
-                T buffer[n];
-                for(int i = 0; i < m; i++)
+                if(first_row != second_row)
                 {
-                    buffer[i] = (*this)[first_row][i];
-                }
-                for(int i = 0; i < m; i++)
-                {
-                    (*this)[first_row][i] = (*this)[second_row][i];
-                    (*this)[second_row][i] = buffer[i];
+                    T buffer[n];
+                    for(int i = 0; i < m; i++)
+                    {
+                        buffer[i] = (*this)[first_row][i];
+                    }
+                    for(int i = 0; i < m; i++)
+                    {
+                        (*this)[first_row][i] = (*this)[second_row][i];
+                        (*this)[second_row][i] = buffer[i];
+                    }   
                 }
             }
             void SwapColumns(int first_column, int second_column)
             {
-                T buffer[n];
-                for(int i = 0; i < m; i++)
+                if(first_column != second_column)
                 {
-                    buffer[i] = (*this)[i][first_column];
-                }
-                for(int i = 0; i < m; i++)
-                {
-                    (*this)[i][first_column] = (*this)[i][second_column];
-                    (*this)[i][second_column] = buffer[i];
+                    T buffer[n];
+                    for(int i = 0; i < m; i++)
+                    {
+                        buffer[i] = (*this)[i][first_column];
+                    }
+                    for(int i = 0; i < m; i++)
+                    {
+                        (*this)[i][first_column] = (*this)[i][second_column];
+                        (*this)[i][second_column] = buffer[i];
+                    }
                 }
             }
             void MultiplyRow(T k, int row)
@@ -235,14 +249,14 @@ namespace LinearAlgebra
                     (*this)[i][column] *= k;
                 }
             }
-            void SumRow(int old_row, int added_row, int k)
+            void SumRow(int old_row, int added_row, T k)
             {
                 for(int i = 0; i < m; i++)
                 {
                     (*this)[old_row][i] += k * (*this)[added_row][i];
                 }
             }
-            void SumColumns(int old_column, int added_column, int k)
+            void SumColumns(int old_column, int added_column, T k)
             {
                 for(int i = 0; i < m; i++)
                 {
@@ -318,7 +332,7 @@ namespace LinearAlgebra
             {
                 int rank = GetRank();
                 
-                int *columns = new int[rank];
+                int columns[rank];
                 int *rows = new int[2*rank]{0};
                 int count = 0;
                 for(int j = 0; j < n; j++)
@@ -340,7 +354,7 @@ namespace LinearAlgebra
                     rows[rank + i] = columns[i];
                 }
 
-                delete[] columns;
+                //delete[] columns;
                 return rows;
             }
 
@@ -404,5 +418,102 @@ namespace LinearAlgebra
                 delete[] basis;
                 return answer;
             }   
+
+            T* GetTriangleAnalog(T *constant_terms)
+            {
+                bool is_string_null;
+                T buffer;
+                T *constant_terms_clone = new T[m];
+                for(int i = 0; i < m; i++)
+                {
+                    constant_terms_clone[i] = constant_terms[i];
+                }
+
+                for(int i = 0; i < n - 1; i++)
+                {
+                    is_string_null = true;
+                    for(int k = i; k < n; k++)
+                    {
+                        if((*this)[k][i] != 0)
+                        {
+                            is_string_null = false;
+                            SwapRows(k, i);
+                            buffer = constant_terms_clone[k];
+                            constant_terms_clone[k] = constant_terms_clone[i];
+                            constant_terms_clone[i] = buffer;
+                            break;
+                        }
+                    }
+                    
+                    if(!is_string_null)
+                    {
+                        for(int j = i + 1; j < m; j++)
+                        {
+                            constant_terms_clone[j] -= (*this)[j][i]/(*this)[i][i]*constant_terms_clone[i];
+                            SumRow(j, i, -(*this)[j][i]/(*this)[i][i]);
+                            int a = 0;
+                        }
+                    }
+                }
+
+                return constant_terms_clone;
+            }
+
+            T* GaussianElimination(T *constant_terms)
+            {
+                T*constant_terms_clone = GetTriangleAnalog(constant_terms);
+                
+                bool is_string_null = true;
+                for(int i = 0; i < m; i++)
+                {
+                    if((*this)[n - 1][i] != 0)
+                    {
+                        is_string_null = false;
+                        break;
+                    }
+                }
+
+                if(is_string_null)
+                {
+                    throw MatrixError("It isn't diagonal form", "Diagonal form because it's null string on matrix");
+                }
+
+                for(int i = n - 1; i >= 0; i--)
+                {
+                    int a = 0;
+                    for(int j = 0; j < i; j++)
+                    {
+                        if((*this)[j][i] != 0)
+                        {
+                            constant_terms_clone[j] -= ((*this)[j][i]/(*this)[i][i])*constant_terms_clone[i];
+                            SumRow(j, i, -(*this)[j][i]/(*this)[i][i]);
+                        }
+                    }
+                }
+
+                return constant_terms_clone;
+            }
+
+            T* GetSolutionByGaussianElimination(T *constant_terms)
+            {
+                Matrix clone_matrix = Clone();
+                //T *constant_terms_clone = clone_matrix.GetTriangleAnalog(constant_terms);
+                T *constant_terms_clone = clone_matrix.GaussianElimination(constant_terms);
+                T *solution = new T[n];
+
+                for(int i = 0; i < n; i++)
+                {
+                    if((*this)[i][i] == 0)
+                    {
+                        throw MatrixError("Solution can't be find", "Solution isn't exists or it isn't unique");
+                    }
+                    else
+                    {
+                        solution[i] = constant_terms_clone[i]/(clone_matrix[i][i]);
+                    }
+                }
+
+                return solution;
+            }
     };
 }
